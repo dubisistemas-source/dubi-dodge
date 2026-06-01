@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Dubi Dodge</title>
+
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    background:#111;
+    color:white;
+    font-family:Arial;
+}
+
+canvas{
+    display:block;
+    margin:auto;
+    background:#222;
+}
+
+#info{
+    position:absolute;
+    top:10px;
+    left:10px;
+    font-size:22px;
+}
+</style>
+</head>
+<body>
+
+<div id="info">
+    ⏱️ <span id="time">0</span>s |
+    🏆 <span id="record">0</span>s |
+    ❤️ <span id="lives">3</span> |
+    🪙 <span id="coins">0</span> |
+    ⭐ <span id="level">1</span>
+
+    <br>
+🛒 1=Vida(50) | 2=Velocidad(100) | 3=Escudo(150)
+</div>
+
+<canvas id="game" width="900" height="600"></canvas>
+
+<script>
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const player = {
+    x:450,
+    y:300,
+    size:25,
+    speed:6
+};
+
+let obstacles = [];
+let hunters = [];
+let bosses = [];
+let bullets = [];
+let coinItems = [];
+let keys = {};
+let shieldActive = false;
+let startTime = Date.now();
+let gameOver = false;
+let lives = 3;
+let level = 1;
+let coins = 0;
+let invincible = false;
+
+let record =
+localStorage.getItem("dubiRecord") || 0;
+
+document.getElementById("record").textContent =
+record;
+
+document.addEventListener("keydown",e=>{
+    keys[e.key]=true;
+    if(e.key === " "){
+
+bullets.push({
+
+    x: player.x + player.size/2 - 4,
+y: player.y,
+    size: 8,
+    speed: 10
+
+});
+
+}
+});
+document.addEventListener("keydown",e=>{
+
+if(e.key==="1" && coins>=50){
+
+    coins -= 50;
+    lives++;
+
+    document.getElementById("coins").textContent = coins;
+    document.getElementById("lives").textContent = lives;
+
+}
+
+if(e.key==="2" && coins>=100){
+
+    coins -= 100;
+    player.speed += 1;
+
+    document.getElementById("coins").textContent = coins;
+
+}
+
+if(e.key==="3" && coins>=150){
+
+    coins -= 150;
+
+    shieldActive = true;
+    invincible = true;
+
+    document.getElementById("coins").textContent = coins;
+
+    setTimeout(()=>{
+
+        shieldActive = false;
+        invincible = false;
+
+    },10000);
+
+}
+
+});
+document.addEventListener("keyup",e=>{
+    keys[e.key]=false;
+});
+
+function createCoin(){
+
+coinItems.push({
+
+    x:Math.random()*(canvas.width-20),
+    y:Math.random()*(canvas.height-20),
+    size:15
+
+});
+
+}
+
+function createObstacle(){
+
+    const side =
+    Math.floor(Math.random()*4);
+
+    let x,y,vx,vy;
+
+    const speed =
+3 + Math.random()*4 + level*0.3;
+
+    if(side===0){
+        x=Math.random()*canvas.width;
+        y=-20;
+        vx=0;
+        vy=speed;
+    }
+
+    if(side===1){
+        x=canvas.width+20;
+        y=Math.random()*canvas.height;
+        vx=-speed;
+        vy=0;
+    }
+
+    if(side===2){
+        x=Math.random()*canvas.width;
+        y=canvas.height+20;
+        vx=0;
+        vy=-speed;
+    }
+
+    if(side===3){
+        x=-20;
+        y=Math.random()*canvas.height;
+        vx=speed;
+        vy=0;
+    }
+
+    obstacles.push({
+        x,y,vx,vy,size:20
+    });
+
+}
+
+function createHunter(){
+
+hunters.push({
+
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    size: 25,
+    speed: 2 + level * 0.5
+
+});
+
+}
+setInterval(()=>{
+
+if(!gameOver){
+
+    createObstacle();
+
+}
+
+},500);
+setInterval(()=>{
+
+if(!gameOver){
+
+    createCoin();
+
+}
+
+},4000);
+setInterval(()=>{
+
+if(!gameOver){
+
+    createHunter();
+
+}
+
+},10000);
+function createBoss(){
+
+bosses.push({
+
+x: Math.random() * canvas.width,
+y: Math.random() * canvas.height,
+size: 60,
+speed: 3 + level * 0.5,
+hp: 10
+
+});
+
+}
+setInterval(()=>{
+
+if(!gameOver){
+
+    createBoss();
+
+}
+
+},60000);
+function collision(a,b){
+
+    return (
+        a.x < b.x+b.size &&
+        a.x+a.size > b.x &&
+        a.y < b.y+b.size &&
+        a.y+a.size > b.y
+    );
+
+}
+
+function update(){
+
+    if(gameOver) return;
+
+    if(keys["ArrowLeft"] || keys["a"]){
+
+        player.x -= player.speed;
+
+    }
+
+    if(keys["ArrowRight"] || keys["d"]){
+
+        player.x += player.speed;
+
+    }
+
+    if(keys["ArrowUp"] || keys["w"]){
+
+        player.y -= player.speed;
+
+    }
+
+    if(keys["ArrowDown"] || keys["s"]){
+
+        player.y += player.speed;
+
+    }
+
+    player.x =
+    Math.max(
+        0,
+        Math.min(
+            canvas.width-player.size,
+            player.x
+        )
+    );
+
+    player.y =
+    Math.max(
+        0,
+        Math.min(
+            canvas.height-player.size,
+            player.y
+        )
+    );
+
+    obstacles.forEach(o=>{
+
+        o.x += o.vx;
+        o.y += o.vy;
+
+        if(collision(player,o) && !invincible){
+
+lives--;
+
+document.getElementById("lives")
+.textContent = lives;
+
+invincible = true;
+
+setTimeout(()=>{
+
+    invincible = false;
+
+},1000);
+
+if(lives <= 0){
+
+    gameOver = true;
+
+            const time =
+            Math.floor(
+                (Date.now()-startTime)/1000
+            );
+
+            if(time>record){
+
+                localStorage.setItem(
+                    "dubiRecord",
+                    time
+                );
+
+            }
+
+            setTimeout(()=>{
+
+                alert(
+                    "💀 Perdiste\n\nTiempo: "
+                    + time +
+                    " segundos"
+                );
+
+                location.reload();
+
+            },100);
+
+}
+
+}
+
+});
+    const seconds =
+    Math.floor(
+        (Date.now()-startTime)/1000
+    );
+
+    document.getElementById("time")
+    .textContent = seconds;
+
+}
+
+function draw(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.fillStyle="cyan";
+
+    ctx.fillRect(
+        player.x,
+        player.y,
+        player.size,
+        player.size
+    );
+    ctx.fillStyle="gold";
+
+coinItems.forEach(coin=>{
+
+    ctx.beginPath();
+
+    ctx.arc(
+        coin.x,
+        coin.y,
+        coin.size,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+});
+ctx.fillStyle = "purple";
+
+hunters.forEach(h=>{
+
+    ctx.fillRect(
+
+        h.x,
+        h.y,
+        h.size,
+        h.size
+
+    );
+
+});
+    ctx.fillStyle="red";
+
+    obstacles.forEach(o=>{
+
+        ctx.fillRect(
+            o.x,
+            o.y,
+            o.size,
+            o.size
+        );
+
+    });
+
+}
+
+function loop(){
+    bullets.forEach(b=>{
+
+b.y -= b.speed;
+
+});
+
+bullets.forEach((bullet,bi)=>{
+
+bosses.forEach((boss,bossi)=>{
+
+    if(collision(bullet,boss)){
+
+        boss.hp--;
+
+        bullets.splice(bi,1);
+
+        if(boss.hp <= 0){
+
+            bosses.splice(bossi,1);
+
+            coins += 100;
+
+            document.getElementById("coins")
+            .textContent = coins;
+
+        }
+
+    }
+
+});
+
+});
+    
+    update();
+    hunters.forEach(h=>{
+
+let dx = player.x - h.x;
+let dy = player.y - h.y;
+
+let dist = Math.sqrt(dx*dx + dy*dy);
+
+if(dist > 0){
+
+    h.x += (dx/dist) * h.speed;
+    h.y += (dy/dist) * h.speed;
+
+}
+
+});
+hunters.forEach(h=>{
+
+if(collision(player,h) && !invincible){
+
+    lives--;
+
+    document.getElementById("lives")
+    .textContent = lives;
+
+    invincible = true;
+
+    setTimeout(()=>{
+
+        invincible = false;
+
+    },1000);
+
+}
+
+});
+    const seconds =
+Math.floor(
+    (Date.now()-startTime)/1000
+);
+coinItems.forEach((coin,index)=>{
+
+if(collision(player,coin)){
+
+    coins += 10;
+
+    document.getElementById("coins")
+    .textContent = coins;
+
+    coinItems.splice(index,1);
+
+}
+
+});
+let newLevel = Math.floor(seconds / 30) + 1;
+
+if(newLevel > level){
+
+    level = newLevel;
+
+    document.getElementById("level")
+    .textContent = level;
+
+    alert("⭐ Nivel " + level);
+
+}
+bosses.forEach(b=>{
+
+let dx = player.x - b.x;
+let dy = player.y - b.y;
+
+let dist = Math.sqrt(dx*dx + dy*dy);
+
+if(dist > 0){
+
+    b.x += (dx/dist) * b.speed;
+    b.y += (dy/dist) * b.speed;
+
+}
+
+});
+
+bosses.forEach(b=>{
+
+if(collision(player,b) && !invincible){
+
+    lives -= 2;
+
+    document.getElementById("lives")
+    .textContent = lives;
+
+    invincible = true;
+
+    setTimeout(()=>{
+
+        invincible = false;
+
+    },1000);
+
+}
+
+});
+    draw();
+    ctx.fillStyle = "white";
+
+bullets.forEach(b=>{
+
+    ctx.fillRect(
+        b.x,
+        b.y,
+        b.size,
+        b.size
+    );
+
+});
+    ctx.fillStyle = "black";
+
+    bosses.forEach(b=>{
+
+ctx.fillRect(
+    b.x,
+    b.y,
+    b.size,
+    b.size
+);
+
+// Barra de vida
+ctx.fillStyle = "red";
+
+ctx.fillRect(
+    b.x,
+    b.y - 12,
+    b.size,
+    6
+);
+
+ctx.fillStyle = "lime";
+
+ctx.fillRect(
+    b.x,
+    b.y - 12,
+    (b.hp / 10) * b.size,
+    6
+);
+
+ctx.fillStyle = "black";
+
+});
+    if(shieldActive){
+
+ctx.beginPath();
+
+ctx.arc(
+    player.x + player.size/2,
+    player.y + player.size/2,
+    25,
+    0,
+    Math.PI*2
+);
+
+ctx.strokeStyle = "lime";
+ctx.lineWidth = 3;
+ctx.stroke();
+
+}
+    requestAnimationFrame(loop);
+
+}
+
+loop();
+
+
+</script>
+
+</body>
+</html>
