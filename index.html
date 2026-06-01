@@ -5,6 +5,23 @@
 <title>Dubi Dodge</title>
 
 <style>
+    #mobileControls{
+    position:fixed;
+    bottom:20px;
+    left:20px;
+    z-index:999;
+}
+
+#mobileControls button{
+    width:70px;
+    height:70px;
+    font-size:30px;
+    border:none;
+    border-radius:15px;
+    margin:5px;
+    background:#333;
+    color:white;
+}
 body{
     margin:0;
     overflow:hidden;
@@ -637,11 +654,53 @@ ctx.stroke();
     requestAnimationFrame(loop);
 
 }
+function touchKey(btn,key){
 
+btn.addEventListener("touchstart",e=>{
+    e.preventDefault();
+    keys[key]=true;
+});
+
+btn.addEventListener("touchend",e=>{
+    e.preventDefault();
+    keys[key]=false;
+});
+
+}
+
+touchKey(
+document.getElementById("up"),
+"ArrowUp"
+);
+
+touchKey(
+document.getElementById("down"),
+"ArrowDown"
+);
+
+touchKey(
+document.getElementById("left"),
+"ArrowLeft"
+);
+
+touchKey(
+document.getElementById("right"),
+"ArrowRight"
+);
 loop();
 
 
 </script>
+<div id="mobileControls">
 
+    <button id="up">⬆️</button>
+
+    <div>
+        <button id="left">⬅️</button>
+        <button id="down">⬇️</button>
+        <button id="right">➡️</button>
+    </div>
+
+</div>
 </body>
 </html>
