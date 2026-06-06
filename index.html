@@ -47,6 +47,8 @@ input{
 <div class="card">
      <h2>Cuenta</h2>
     
+        <input id="username" type="text" placeholder="Nombre de usuario"><br><br>
+
         <input id="email" type="email" placeholder="Correo"><br><br>
     
         <input id="password" type="password" placeholder="Contraseña"><br><br>
@@ -95,6 +97,7 @@ input{
     
     const email = document.getElementById("email");
     const password = document.getElementById("password");
+    const username = document.getElementById("username");
     const estado = document.getElementById("estado");
     const gameCard = document.getElementById("gameCard");
     
@@ -110,10 +113,13 @@ input{
     await setDoc(
       doc(db, "usuarios", userCredential.user.uid),
       {
+        username: username.value,
         email: email.value,
         monedas: 0,
         record: 0,
-        nivel: 1
+        nivel: 1,
+        recordPuntos: 0,
+        recordTiempo: 0
       }
     );
 
