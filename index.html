@@ -66,6 +66,61 @@ input{
         <button>Jugar</button>
     </a>
 </div>
-
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqKYqxnS9aSiMt4tTZ_Lv747VRvL6VrBc",
+      authDomain: "dubi-dodge.firebaseapp.com",
+      projectId: "dubi-dodge",
+      storageBucket: "dubi-dodge.firebasestorage.app",
+      messagingSenderId: "885842968174",
+      appId: "1:885842968174:web:bc90859c42505538bdf07f",
+      measurementId: "G-8RDTKGXXQ5"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const estado = document.getElementById("estado");
+    const gameCard = document.getElementById("gameCard");
+    
+    document.getElementById("btnRegistro").onclick = async () => {
+      try {
+        await createUserWithEmailAndPassword(
+          auth,
+          email.value,
+          password.value
+        );
+    
+        estado.textContent = "Cuenta creada correctamente";
+        gameCard.style.display = "block";
+      } catch (error) {
+        estado.textContent = error.message;
+      }
+    };
+    
+    document.getElementById("btnLogin").onclick = async () => {
+      try {
+        await signInWithEmailAndPassword(
+          auth,
+          email.value,
+          password.value
+        );
+    
+        estado.textContent = "Sesión iniciada";
+        gameCard.style.display = "block";
+      } catch (error) {
+        estado.textContent = error.message;
+      }
+    };
+    </script>
 </body>
 </html>
