@@ -250,7 +250,8 @@ canvas {
 import {
   getFirestore,
   doc,
-  getDoc
+  getDoc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
         
         const firebaseConfig = {
@@ -1042,6 +1043,14 @@ function updateCoins() {
 
         const coinValue = coin.golden ? 50 : 10;
         coins += coinValue;
+        if (window.userId) {
+    updateDoc(
+        doc(db, "usuarios", window.userId),
+        {
+            monedas: coins
+        }
+    );
+}
         stats.coinsCollected++;
         document.getElementById("coins").textContent = coins;
         updateShopButtons();
