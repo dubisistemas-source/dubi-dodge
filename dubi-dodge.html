@@ -251,7 +251,9 @@ import {
   getFirestore,
   doc,
   getDoc,
-  updateDoc
+  updateDoc,
+  collection,
+  getDocs
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
         
         const firebaseConfig = {
@@ -266,7 +268,22 @@ import {
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        async function cargarRanking() {
 
+const snapshot = await getDocs(
+    collection(db, "usuarios")
+);
+
+const ranking = [];
+
+snapshot.forEach((docu) => {
+    ranking.push(docu.data());
+});
+
+console.log(ranking);
+}
+
+cargarRanking();
         window.db = db;
         window.updateDoc = updateDoc;
         window.doc = doc;
