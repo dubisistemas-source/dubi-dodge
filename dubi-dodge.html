@@ -240,6 +240,58 @@ canvas {
 </head>
 <body>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+        import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+        
+        const firebaseConfig = {
+          apiKey: "AIzaSyDqKYqxnS9aSiMt4tTZ_Lv747VRvL6VrBc",
+          authDomain: "dubi-dodge.firebaseapp.com",
+          projectId: "dubi-dodge",
+          storageBucket: "dubi-dodge.firebasestorage.app",
+          messagingSenderId: "885842968174",
+          appId: "1:885842968174:web:bc90859c42505538bdf07f"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        onAuthStateChanged(auth, async (user) => {
+  if (user) {
+
+    window.userId = user.uid;
+
+    const docRef = doc(db, "usuarios", user.uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+
+      const datos = docSnap.data();
+
+      coins = datos.monedas || 0;
+      level = datos.nivel || 1;
+
+      document.getElementById("coins").textContent = coins;
+      document.getElementById("level").textContent = level;
+
+      console.log("Datos cargados:", datos);
+    }
+
+  } else {
+    location.href = "index.html";
+  }
+});
+        </script>
 <div id="wrap">
     <div id="info">
         🎯 <span id="score">0</span> &nbsp;|&nbsp;
