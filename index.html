@@ -73,6 +73,11 @@ input{
       createUserWithEmailAndPassword,
       signInWithEmailAndPassword
     } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+    import {
+  getFirestore,
+  doc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
     
     const firebaseConfig = {
       apiKey: "AIzaSyDqKYqxnS9aSiMt4tTZ_Lv747VRvL6VrBc",
@@ -86,6 +91,7 @@ input{
     
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
     
     const email = document.getElementById("email");
     const password = document.getElementById("password");
@@ -93,34 +99,49 @@ input{
     const gameCard = document.getElementById("gameCard");
     
     document.getElementById("btnRegistro").onclick = async () => {
-      try {
-        await createUserWithEmailAndPassword(
-          auth,
-          email.value,
-          password.value
-        );
-    
-        estado.textContent = "Cuenta creada correctamente";
-        gameCard.style.display = "block";
-      } catch (error) {
-        estado.textContent = error.message;
+  try {
+
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email.value,
+      password.value
+    );
+
+    await setDoc(
+      doc(db, "usuarios", userCredential.user.uid),
+      {
+        email: email.value,
+        monedas: 0,
+        record: 0,
+        nivel: 1
       }
-    };
+    );
+
+    estado.textContent = "Cuenta creada correctamente";
+    gameCard.style.display = "block";
+
+  } catch (error) {
+    estado.textContent = error.message;
+  }
+};
     
-    document.getElementById("btnLogin").onclick = async () => {
-      try {
-        await signInWithEmailAndPassword(
-          auth,
-          email.value,
-          password.value
-        );
+document.getElementById("btnLogin").onclick = async () => {
+  try {
+
+    await signInWithEmailAndPassword(
+      auth,
+      email.value,
+      password.value
+    );
+
+    estado.textContent = "Sesión iniciada";
+    gameCard.style.display = "block";
+
+  } catch (error) {
+    estado.textContent = error.message;
+  }
+};
     
-        estado.textContent = "Sesión iniciada";
-        gameCard.style.display = "block";
-      } catch (error) {
-        estado.textContent = error.message;
-      }
-    };
     </script>
 </body>
 </html>
