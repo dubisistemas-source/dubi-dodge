@@ -266,7 +266,7 @@ import {
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        
+
         window.db = db;
         window.updateDoc = updateDoc;
         window.doc = doc;
@@ -286,8 +286,12 @@ import {
       coins = datos.monedas || 0;
       level = datos.nivel || 1;
 
+      record = datos.recordTiempo || 0;
+      scoreRecord = datos.recordPuntos || 0;
+
       document.getElementById("coins").textContent = coins;
       document.getElementById("level").textContent = level;
+      document.getElementById("record").textContent = record;
 
       console.log("Datos cargados:", datos);
     }
@@ -630,7 +634,15 @@ function endGame() {
         scoreRecord = score;
         localStorage.setItem("dubiScoreRecord", score);
     }
-
+if (window.userId) {
+    updateDoc(
+        doc(db, "usuarios", window.userId),
+        {
+            recordTiempo: record,
+            recordPuntos: scoreRecord
+        }
+    );
+}
     const diff = record - time;
     const diffMsg = diff > 0
         ? "<p>Te faltaron <strong>" + diff + "s</strong> para el récord de tiempo.</p>"
