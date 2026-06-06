@@ -282,6 +282,38 @@ snapshot.forEach((docu) => {
 
 console.log(ranking);
 }
+async function mostrarRanking() {
+
+const snapshot = await getDocs(
+    collection(db, "usuarios")
+);
+
+const jugadores = [];
+
+snapshot.forEach((docu) => {
+    jugadores.push(docu.data());
+});
+
+jugadores.sort((a, b) =>
+    (b.recordPuntos || 0) - (a.recordPuntos || 0)
+);
+
+let html = "<h3>🏆 Ranking</h3>";
+
+jugadores.slice(0, 5).forEach((j, i) => {
+
+    html +=
+        (i + 1) +
+        ". " +
+        (j.username || "Jugador") +
+        " - " +
+        (j.recordPuntos || 0) +
+        " pts<br>";
+
+});
+
+document.getElementById("ranking").innerHTML = html;
+}
 
 cargarRanking();
 mostrarRanking();
@@ -323,38 +355,6 @@ mostrarRanking();
     <div id="info">
         <div id="ranking">
             Cargando ranking...
-            async function mostrarRanking() {
-
-                const snapshot = await getDocs(
-                    collection(db, "usuarios")
-                );
-            
-                const jugadores = [];
-            
-                snapshot.forEach((docu) => {
-                    jugadores.push(docu.data());
-                });
-            
-                jugadores.sort((a, b) =>
-                    (b.recordPuntos || 0) - (a.recordPuntos || 0)
-                );
-            
-                let html = "<h3>🏆 Ranking</h3>";
-            
-                jugadores.slice(0, 5).forEach((j, i) => {
-            
-                    html +=
-                        (i + 1) +
-                        ". " +
-                        (j.username || "Jugador") +
-                        " - " +
-                        (j.recordPuntos || 0) +
-                        " pts<br>";
-            
-                });
-            
-                document.getElementById("ranking").innerHTML = html;
-            }
         </div>
         🎯 <span id="score">0</span> &nbsp;|&nbsp;
         🔥 ×<span id="combo">1</span> &nbsp;|&nbsp;
