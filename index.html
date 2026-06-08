@@ -6,9 +6,7 @@
 <title>Dubi Games</title>
 
 <style>
-  body{
-  flex-direction:column;
-}
+  
 body{
     margin:0;
     min-height:100vh;
@@ -20,8 +18,13 @@ body{
     font-family:Arial, sans-serif;
 
     display:flex;
+    flex-direction:column;
+
     justify-content:center;
     align-items:center;
+
+    padding:20px;
+    box-sizing:border-box;
 }
 h1{
     font-size:60px;
@@ -112,6 +115,36 @@ button{
         #16a34a
     );
 }
+button:hover{
+    transform:scale(1.03);
+
+    box-shadow:
+    0 0 15px rgba(255,255,255,0.3);
+}
+
+button:active{
+    transform:scale(0.98);
+}
+@media (max-width:768px){
+
+h1{
+    font-size:42px;
+    text-align:center;
+}
+
+.card{
+    width:95%;
+    padding:25px;
+}
+
+input{
+    font-size:16px;
+}
+
+button{
+    font-size:18px;
+}
+}
 </style>
 </head>
 <body>
@@ -178,6 +211,7 @@ button{
     const username = document.getElementById("username");
     const estado = document.getElementById("estado");
     const gameCard = document.getElementById("gameCard");
+const formCard = document.querySelector(".card");
     
     document.getElementById("btnRegistro").onclick = async () => {
   try {
@@ -202,7 +236,9 @@ button{
     );
 
     estado.textContent = "Cuenta creada correctamente";
-    gameCard.style.display = "block";
+
+formCard.style.display = "none";
+gameCard.style.display = "block";
 
   } catch (error) {
     estado.textContent = error.message;
@@ -219,7 +255,9 @@ document.getElementById("btnLogin").onclick = async () => {
     );
 
     estado.textContent = "Sesión iniciada";
-    gameCard.style.display = "block";
+
+formCard.style.display = "none";
+gameCard.style.display = "block";
 
   } catch (error) {
     estado.textContent = error.message;
