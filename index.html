@@ -262,6 +262,9 @@ button{
       <option>🐼</option>
       <option>👹</option>
     </select>
+    <button id="guardarAvatar">
+      Guardar Avatar
+    </button>
       
       <h2 id="perfilNombre">User</h2>
       
@@ -408,7 +411,25 @@ document.getElementById("btnLogin").onclick = async () => {
     estado.textContent = error.message;
   }
 };
+document.getElementById("guardarAvatar").onclick = async () => {
 
+const user = auth.currentUser;
+
+await setDoc(
+  doc(db, "usuarios", user.uid),
+  {
+    avatar: document.getElementById("avatarSelect").value
+  },
+  { merge: true }
+);
+
+document.getElementById("avatarPerfil").textContent =
+document.getElementById("avatarSelect").value;
+document.getElementById("avatarSelect").value =
+datos.avatar;
+
+alert("Avatar guardado");
+};
     
     </script>
 </body>
