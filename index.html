@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dubi Games</title>
-
+body{
+  flex-direction:column;
+}
 <style>
 body{
     margin:0;
@@ -21,7 +23,15 @@ body{
     align-items:center;
 }
 h1{
-    font-size:50px;
+    font-size:60px;
+    margin-bottom:20px;
+
+    color:#00aaff;
+
+    text-shadow:
+    0 0 10px #00aaff,
+    0 0 20px #00aaff,
+    0 0 30px #00aaff;
 }
 
 .card{
@@ -51,11 +61,55 @@ button{
     cursor:pointer;
 }
 input{
-    width:90%;
-    padding:10px;
-    font-size:16px;
-    border-radius:8px;
+    width:100%;
+    padding:15px;
+
+    background:#0d1230;
+
+    color:white;
+
+    border:1px solid #3b82f6;
+
+    border-radius:12px;
+
+    font-size:18px;
+
+    box-sizing:border-box;
+}
+button{
+    width:100%;
+    padding:15px;
+    margin-top:10px;
     border:none;
+    border-radius:12px;
+    color:white;
+    font-size:20px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+.crear{
+    background:linear-gradient(
+        90deg,
+        #00aaff,
+        #0066ff
+    );
+}
+
+.login{
+    background:linear-gradient(
+        90deg,
+        #8b5cf6,
+        #c026d3
+    );
+}
+
+.jugar{
+    background:linear-gradient(
+        90deg,
+        #22c55e,
+        #16a34a
+    );
 }
 </style>
 </head>
@@ -72,9 +126,13 @@ input{
     
         <input id="password" type="password" placeholder="Contraseña"><br><br>
     
-        <button id="btnRegistro">Crear cuenta</button>
-    
-        <button id="btnLogin">Iniciar sesión</button>
+        <button id="btnRegistro" class="crear">
+          Crear cuenta
+      </button>
+      
+      <button id="btnLogin" class="login">
+          Iniciar sesión
+      </button>
     
         <p id="estado"></p>
     </div>
@@ -84,7 +142,7 @@ input{
     <p>Esquiva enemigos, recoge monedas y derrota jefes.</p>
 
     <a href="dubi-dodge.html">
-        <button>Jugar</button>
+      <button class="jugar">Jugar</button>
     </a>
 </div>
 <script type="module">
