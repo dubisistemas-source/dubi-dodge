@@ -37,16 +37,22 @@ h1{
     0 0 20px #00aaff,
     0 0 30px #00aaff;
 }
-
+#perfilCard{
+    background:transparent;
+    border:none;
+    box-shadow:none;
+    padding:0;
+    margin:0;
+}
 .card{
     background:rgba(15,15,40,0.9);
 
-    padding:35px;
+    padding:25px;
 
-    margin:20px auto;
+    margin:15px auto;
 
-    width:90%;
-    max-width:450px;
+    width:85%;
+    max-width:350px;
 
     border-radius:25px;
 
@@ -57,6 +63,19 @@ h1{
     0 0 40px rgba(59,130,246,0.2);
 
     backdrop-filter:blur(10px);
+}
+@media (max-width:768px){
+
+.card{
+    width:90%;
+    max-width:320px;
+    padding:20px;
+}
+
+h1{
+    font-size:38px;
+}
+
 }
 #perfilCard{
     text-align:left;
@@ -143,7 +162,7 @@ h1{
 }
 
 .card{
-    width:95%;
+    width:80%;
     padding:25px;
 }
 
@@ -213,7 +232,7 @@ button{
     </div>
 
 <div class="card" id="gameCard" style="display:none;">
-  <div class="card" id="perfilCard" style="display:none;">
+  <div  id="perfilCard" style="display:none;">
 
     <h2>Perfil</h2>
 
