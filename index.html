@@ -169,6 +169,19 @@ h1{
 input{
     font-size:16px;
 }
+#avatarSelect{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+
+    background:#0d1230;
+    color:white;
+
+    border:1px solid #3b82f6;
+    border-radius:12px;
+
+    font-size:20px;
+}
 
 button{
     font-size:18px;
@@ -236,9 +249,19 @@ button{
 
     <h2>Perfil</h2>
 
-    <div class="avatar">
+    <div class="avatar" id="avatarPerfil">
       🤖
-      </div>
+    </div>
+    
+    <select id="avatarSelect">
+      <option>🤖</option>
+      <option>👾</option>
+      <option>🐱</option>
+      <option>🐶</option>
+      <option>🦊</option>
+      <option>🐼</option>
+      <option>👹</option>
+    </select>
       
       <h2 id="perfilNombre">User</h2>
       
@@ -319,14 +342,16 @@ button{
       {
         username: username.value,
         email: email.value,
+        avatar: document.getElementById("avatarSelect").value,
         monedas: 0,
         record: 0,
         nivel: 1,
         recordPuntos: 0,
         recordTiempo: 0
+        
       }
     );
-
+  
     estado.textContent = "Cuenta creada correctamente";
 
 formCard.style.display = "none";
@@ -361,6 +386,9 @@ document.getElementById("btnLogin").onclick = async () => {
 
       document.getElementById("perfilNombre").textContent =
       datos.username;
+
+      document.getElementById("avatarPerfil").textContent =
+      datos.avatar;
 
       document.getElementById("perfilMonedas").textContent =
       datos.monedas;
