@@ -1,1 +1,15 @@
-
+{
+  "name": "Dubi Dodge",
+  "short_name": "Dubi Dodge",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#000010",
+  "theme_color": "#1d2cff",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ]
+}
