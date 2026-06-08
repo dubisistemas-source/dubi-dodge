@@ -11,10 +11,10 @@ body{
     min-height:100vh;
 
     background:
-    radial-gradient(circle at top,#1b1464,#090b1f 60%,#020308);
+    radial-gradient(circle at top, #1d2cff 0%, #0a0a2a 40%, #000010 100%);
 
     color:white;
-    font-family:'Segoe UI',sans-serif;
+    font-family:Arial, sans-serif;
 
     display:flex;
     justify-content:center;
@@ -25,11 +25,24 @@ h1{
 }
 
 .card{
-    background:#222;
-    padding:20px;
+    background:rgba(15,15,40,0.9);
+
+    padding:35px;
+
     margin:20px auto;
-    width:300px;
-    border-radius:15px;
+
+    width:90%;
+    max-width:450px;
+
+    border-radius:25px;
+
+    border:1px solid #3b82f6;
+
+    box-shadow:
+    0 0 20px rgba(59,130,246,0.4),
+    0 0 40px rgba(59,130,246,0.2);
+
+    backdrop-filter:blur(10px);
 }
 
 button{
