@@ -58,6 +58,16 @@ h1{
 
     backdrop-filter:blur(10px);
 }
+#perfilCard{
+    text-align:left;
+}
+
+#perfilCard p{
+    font-size:18px;
+    padding:10px;
+    background:rgba(255,255,255,0.05);
+    border-radius:10px;
+}
 
 button{
     padding:10px 20px;
@@ -172,6 +182,31 @@ button{
     </div>
 
 <div class="card" id="gameCard" style="display:none;">
+  <div class="card" id="perfilCard" style="display:none;">
+
+    <h2>👤 Mi Perfil</h2>
+
+    <p>
+        Usuario:
+        <strong id="perfilNombre">---</strong>
+    </p>
+
+    <p>
+        🪙 Monedas:
+        <strong id="perfilMonedas">0</strong>
+    </p>
+
+    <p>
+        ⭐ Nivel:
+        <strong id="perfilNivel">1</strong>
+    </p>
+
+    <p>
+        🏆 Récord:
+        <strong id="perfilRecord">0</strong>
+    </p>
+
+</div>
     <h2>Dubi Dodge</h2>
     <p>Esquiva enemigos, recoge monedas y derrota jefes.</p>
 
@@ -180,6 +215,9 @@ button{
     </a>
 </div>
 <script type="module">
+    import {
+  getDoc
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
     import {
       getAuth,
@@ -211,7 +249,8 @@ button{
     const username = document.getElementById("username");
     const estado = document.getElementById("estado");
     const gameCard = document.getElementById("gameCard");
-const formCard = document.querySelector(".card");
+    const formCard = document.querySelector(".card");
+    const cardCuenta = document.querySelector(".card");
     
     document.getElementById("btnRegistro").onclick = async () => {
   try {
@@ -221,6 +260,32 @@ const formCard = document.querySelector(".card");
       email.value,
       password.value
     );
+    const user = auth.currentUser;
+
+const docRef =
+doc(db,"usuarios",user.uid);
+
+const docSnap =
+await getDoc(docRef);
+
+if(docSnap.exists()){
+
+const datos = docSnap.data();
+
+document.getElementById("perfilNombre")
+.textContent = datos.username;
+
+document.getElementById("perfilMonedas")
+.textContent = datos.monedas;
+
+document.getElementById("perfilNivel")
+.textContent = datos.nivel;
+
+document.getElementById("perfilRecord")
+.textContent =
+datos.recordTiempo;
+
+}
 
     await setDoc(
       doc(db, "usuarios", userCredential.user.uid),
@@ -254,15 +319,18 @@ document.getElementById("btnLogin").onclick = async () => {
       password.value
     );
 
-    estado.textContent = "Sesión iniciada";
+    eestado.textContent = "Sesión iniciada";
 
-formCard.style.display = "none";
+cardCuenta.style.display = "none";
 gameCard.style.display = "block";
+
+perfilCard.style.display = "block";
 
   } catch (error) {
     estado.textContent = error.message;
   }
 };
+
     
     </script>
 </body>
