@@ -594,7 +594,7 @@ function updateCombo() {
         comboMult = newMult;
         stats.maxCombo = Math.max(stats.maxCombo, comboMult);
         document.getElementById("combo").textContent = comboMult;
-        showBanner("🔥 Combo ×" + comboMult, 1200);
+        
         sfxCombo();
         spawnFloatText(player.x + player.size / 2, player.y, "×" + comboMult, "#f39c12");
     }
