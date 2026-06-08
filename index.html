@@ -251,6 +251,7 @@ button{
     const gameCard = document.getElementById("gameCard");
     const formCard = document.querySelector(".card");
     const cardCuenta = document.querySelector(".card");
+    const perfilCard = document.getElementById("perfilCard");
     
     document.getElementById("btnRegistro").onclick = async () => {
   try {
@@ -260,33 +261,7 @@ button{
       email.value,
       password.value
     );
-    const user = auth.currentUser;
-
-const docRef =
-doc(db,"usuarios",user.uid);
-
-const docSnap =
-await getDoc(docRef);
-
-if(docSnap.exists()){
-
-const datos = docSnap.data();
-
-document.getElementById("perfilNombre")
-.textContent = datos.username;
-
-document.getElementById("perfilMonedas")
-.textContent = datos.monedas;
-
-document.getElementById("perfilNivel")
-.textContent = datos.nivel;
-
-document.getElementById("perfilRecord")
-.textContent =
-datos.recordTiempo;
-
-}
-
+    
     await setDoc(
       doc(db, "usuarios", userCredential.user.uid),
       {
@@ -313,18 +288,41 @@ gameCard.style.display = "block";
 document.getElementById("btnLogin").onclick = async () => {
   try {
 
+    const userCredential =
     await signInWithEmailAndPassword(
       auth,
       email.value,
       password.value
     );
 
-    eestado.textContent = "Sesión iniciada";
+    estado.textContent = "Sesión iniciada";
 
-cardCuenta.style.display = "none";
-gameCard.style.display = "block";
+    const docRef =
+    doc(db, "usuarios", userCredential.user.uid);
 
-perfilCard.style.display = "block";
+    const docSnap =
+    await getDoc(docRef);
+
+    if(docSnap.exists()){
+
+      const datos = docSnap.data();
+
+      document.getElementById("perfilNombre").textContent =
+      datos.username;
+
+      document.getElementById("perfilMonedas").textContent =
+      datos.monedas;
+
+      document.getElementById("perfilNivel").textContent =
+      datos.nivel;
+
+      document.getElementById("perfilRecord").textContent =
+      datos.recordTiempo;
+    }
+
+    cardCuenta.style.display = "none";
+    gameCard.style.display = "block";
+    perfilCard.style.display = "block";
 
   } catch (error) {
     estado.textContent = error.message;
