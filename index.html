@@ -155,6 +155,37 @@ button{
     font-size:18px;
 }
 }
+.avatar{
+    width:120px;
+    height:120px;
+
+    border-radius:50%;
+
+    background:#0d1230;
+
+    border:3px solid #00aaff;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:60px;
+
+    margin:auto;
+}
+
+.stats{
+    display:flex;
+    justify-content:space-around;
+    margin-top:20px;
+}
+
+.stat{
+    background:#161b3d;
+    padding:15px 25px;
+    border-radius:15px;
+    font-size:22px;
+}
 </style>
 </head>
 <body>
@@ -184,27 +215,29 @@ button{
 <div class="card" id="gameCard" style="display:none;">
   <div class="card" id="perfilCard" style="display:none;">
 
-    <h2>👤 Mi Perfil</h2>
+    <h2>Perfil</h2>
 
-    <p>
-        Usuario:
-        <strong id="perfilNombre">---</strong>
-    </p>
-
-    <p>
-        🪙 Monedas:
-        <strong id="perfilMonedas">0</strong>
-    </p>
-
-    <p>
-        ⭐ Nivel:
-        <strong id="perfilNivel">1</strong>
-    </p>
-
-    <p>
-        🏆 Récord:
-        <strong id="perfilRecord">0</strong>
-    </p>
+    <div class="avatar">
+      🤖
+      </div>
+      
+      <h2 id="perfilNombre">User</h2>
+      
+      <p>Nivel <span id="perfilNivel">1</span></p>
+      
+      <div class="stats">
+      
+      <div class="stat">
+      🪙
+      <span id="perfilMonedas">0</span>
+      </div>
+      
+      <div class="stat">
+      🏆
+      <span id="perfilRecord">0</span>
+      </div>
+      
+      </div>
 
 </div>
     <h2>Dubi Dodge</h2>
