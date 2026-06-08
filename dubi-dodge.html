@@ -7,6 +7,33 @@
 <title>Dubi Dodge</title>
 
 <style>
+    #menuBtn{
+    position:fixed;
+    top:10px;
+    right:10px;
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    z-index:999;
+    font-size:24px;
+}
+
+#menuPanel{
+    position:fixed;
+    top:70px;
+    right:10px;
+    background:#1e1e30;
+    border:2px solid #0ff;
+    padding:15px;
+    border-radius:15px;
+    z-index:999;
+}
+
+#menuPanel button{
+    display:block;
+    width:200px;
+    margin:8px 0;
+}
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 html, body {
@@ -238,166 +265,284 @@ canvas {
     #btn-shoot { width: 64px; height: 64px; font-size: 24px; }
     .tbtn { width: 44px; height: 44px; font-size: 18px; }
 }
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+
+    background:
+    radial-gradient(circle at top,
+    #1d4fff,
+    #08081f,
+    #000);
+
+    color:white;
+
+    height:100vh;
+
+    overflow:hidden;
+}
+
+#loadingScreen{
+
+    position:fixed;
+    inset:0;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+    align-items:center;
+
+    gap:20px;
+
+    background:#050510;
+
+    z-index:9999;
+}
+
+.logo{
+
+    font-size:60px;
+
+    font-weight:bold;
+
+    color:#00d4ff;
+
+    text-shadow:
+    0 0 10px #00d4ff,
+    0 0 30px #00d4ff,
+    0 0 60px #00d4ff;
+}
+
+.loader{
+
+    width:80px;
+    height:80px;
+
+    border:6px solid #222;
+
+    border-top:6px solid #00d4ff;
+
+    border-radius:50%;
+
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+
+    from{
+        transform:rotate(0deg);
+    }
+
+    to{
+        transform:rotate(360deg);
+    }
+
+}
+
+#mainMenu{
+
+    padding:20px;
+
+    max-width:1200px;
+
+    margin:auto;
+}
+
+.topBar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+}
+
+.playerInfo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+}
+
+.avatarBig{
+
+    width:100px;
+    height:100px;
+
+    border-radius:50%;
+
+    background:#0f172a;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    font-size:50px;
+
+    border:3px solid #00d4ff;
+}
+
+.titleArea{
+
+    text-align:center;
+
+    margin-top:40px;
+}
+
+.titleArea h1{
+
+    font-size:70px;
+
+    margin:0;
+
+    color:#00d4ff;
+
+    text-shadow:
+    0 0 20px #00d4ff,
+    0 0 50px #00d4ff;
+}
+
+.version{
+
+    color:gold;
+
+    font-weight:bold;
+}
+
+.menuButtons{
+
+    margin-top:50px;
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(250px,1fr));
+
+    gap:15px;
+}
+
+.menuButtons button{
+
+    padding:20px;
+
+    border:none;
+
+    border-radius:20px;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    color:white;
+
+    background:
+    linear-gradient(
+    90deg,
+    #00aaff,
+    #0066ff
+    );
+
+    transition:.3s;
+}
+
+.menuButtons button:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:
+    0 0 25px #00d4ff;
+}
 </style>
 </head>
 <body>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-        import {
-  getAuth,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  updateDoc,
-  collection,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-        
-        const firebaseConfig = {
-          apiKey: "AIzaSyDqKYqxnS9aSiMt4tTZ_Lv747VRvL6VrBc",
-          authDomain: "dubi-dodge.firebaseapp.com",
-          projectId: "dubi-dodge",
-          storageBucket: "dubi-dodge.firebasestorage.app",
-          messagingSenderId: "885842968174",
-          appId: "1:885842968174:web:bc90859c42505538bdf07f"
-        };
-        
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        async function cargarRanking() {
-
-const snapshot = await getDocs(
-    collection(db, "usuarios")
-);
-
-const ranking = [];
-
-snapshot.forEach((docu) => {
-    ranking.push(docu.data());
-});
-
-console.log(ranking);
-}
-async function mostrarRanking() {
-
-const snapshot = await getDocs(
-    collection(db, "usuarios")
-);
-
-const jugadores = [];
-
-snapshot.forEach((docu) => {
-    jugadores.push(docu.data());
-});
-
-jugadores.sort((a, b) =>
-    (b.recordPuntos || 0) - (a.recordPuntos || 0)
-);
-
-let html = "<h3>🏆 Ranking</h3>";
-
-jugadores.slice(0, 5).forEach((j, i) => {
-
-    html +=
-        (i + 1) +
-        ". " +
-        (j.username || "Jugador") +
-        " - " +
-        (j.recordPuntos || 0) +
-        " pts<br>";
-
-});
-
-document.getElementById("ranking").innerHTML = html;
-}
-
-cargarRanking();
-mostrarRanking();
-        window.db = db;
-        window.updateDoc = updateDoc;
-        window.doc = doc;
-        
-        onAuthStateChanged(auth, async (user) => {
-  if (user) {
-
-    window.userId = user.uid;
-
-    const docRef = doc(db, "usuarios", user.uid);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-
-      const datos = docSnap.data();
-
-      coins = datos.monedas || 0;
-      level = datos.nivel || 1;
-
-      record = datos.recordTiempo || 0;
-      scoreRecord = datos.recordPuntos || 0;
-
-      document.getElementById("coins").textContent = coins;
-      document.getElementById("level").textContent = level;
-      document.getElementById("record").textContent = record;
-
-      console.log("Datos cargados:", datos);
-    }
-
-  } else {
-    location.href = "index.html";
-  }
-});
-        </script>
-<div id="wrap">
-    <div id="info">
-        <div id="ranking">
-            Cargando ranking...
+    <div id="loadingScreen">
+        <div class="logo">
+            🎮 DUBI DODGE 2.0
         </div>
-        🎯 <span id="score">0</span> &nbsp;|&nbsp;
-        🔥 ×<span id="combo">1</span> &nbsp;|&nbsp;
-        ⏱️ <span id="time">0</span>s &nbsp;|&nbsp;
-        🏆 <span id="record">0</span>s &nbsp;|&nbsp;
-        ❤️ <span id="lives">3</span> &nbsp;|&nbsp;
-        🪙 <span id="coins">0</span> &nbsp;|&nbsp;
-        ⭐ <span id="level">1</span>
-        <br>
-        <small id="desktop-hint">WASD / Flechas = mover · Espacio = disparar · 1=Vida(50) 2=Velocidad(100) 3=Escudo(150)</small>
-        <small id="mobile-hint">Joystick = mover · 🔫 = disparar · Botones = tienda</small>
+    
+        <div class="loader"></div>
+    
+        <p>Cargando servidores...</p>
     </div>
-    <canvas id="game" width="900" height="600"></canvas>
-</div>
-
-<div id="banner"></div>
-
-<div id="touch-controls">
-    <div id="joystick-zone">
-        <div id="joystick-base"></div>
-        <div id="joystick-knob"></div>
-    </div>
-    <div id="action-panel">
-        <div id="shop-btns">
-            <button class="tbtn" id="btn-life" title="Vida (50)">❤️</button>
-            <button class="tbtn" id="btn-speed" title="Velocidad (100)">⚡</button>
-            <button class="tbtn" id="btn-shield" title="Escudo (150)">🛡️</button>
+    
+    <div id="mainMenu" style="display:none;">
+    
+        <div class="topBar">
+    
+            <div class="playerInfo">
+    
+                <div id="avatarView" class="avatarBig">
+                    🤖
+                </div>
+    
+                <div>
+                    <h2 id="playerName">
+                        Invitado
+                    </h2>
+    
+                    <p>
+                        Nivel
+                        <span id="playerLevel">
+                            1
+                        </span>
+                    </p>
+                </div>
+    
+            </div>
+    
         </div>
-        <button id="btn-shoot" title="Disparar">🔫</button>
+    
+        <div class="titleArea">
+    
+            <h1>
+                DUBI DODGE
+            </h1>
+    
+            <span class="version">
+                VERSION 2.0 PRO
+            </span>
+    
+        </div>
+    
+        <div class="menuButtons">
+    
+            <button id="btnPlay">
+                ▶ JUGAR
+            </button>
+    
+            <button id="btnProfile">
+                👤 PERFIL
+            </button>
+    
+            <button id="btnRanking">
+                🏆 RANKING
+            </button>
+    
+            <button id="btnShop">
+                🛒 TIENDA
+            </button>
+    
+            <button id="btnAchievements">
+                ⭐ LOGROS
+            </button>
+    
+            <button id="btnSettings">
+                ⚙ AJUSTES
+            </button>
+    
+        </div>
+    
     </div>
-</div>
-
-<div id="overlay">
-    <div id="overlay-box">
-        <h2>🎮 Dubi Dodge</h2>
-        <p>Esquiva los cuadrados rojos, evita a los cazadores morados y destruye al jefe negro con disparos.</p>
-        <p>Recoge monedas 🪙 para comprar mejoras. Sobrevive el mayor tiempo posible.</p>
-        <p id="mobile-start-hint" style="display:none;color:#0ff;">📱 Usa el joystick izquierdo para moverte</p>
-        <button id="startBtn">▶ Jugar</button>
-    </div>
-</div>
+    
+    </body>
 
 <script>
 const canvas = document.getElementById("game");
@@ -594,7 +739,7 @@ function updateCombo() {
         comboMult = newMult;
         stats.maxCombo = Math.max(stats.maxCombo, comboMult);
         document.getElementById("combo").textContent = comboMult;
-        
+
         sfxCombo();
         spawnFloatText(player.x + player.size / 2, player.y, "×" + comboMult, "#f39c12");
     }
@@ -1329,9 +1474,49 @@ function loop() {
     draw();
     requestAnimationFrame(loop);
 }
+const menuBtn = document.getElementById("menuBtn");
+const menuPanel = document.getElementById("menuPanel");
 
+menuBtn.onclick = () => {
+
+    if(menuPanel.style.display === "none"){
+        menuPanel.style.display = "block";
+    }else{
+        menuPanel.style.display = "none";
+    }
+
+};
+
+function pausarJuego(){
+
+    paused = true;
+    menuPanel.style.display = "none";
+
+}
+
+function continuarJuego(){
+
+    paused = false;
+    menuPanel.style.display = "none";
+
+}
+window.addEventListener("load",()=>{
+
+setTimeout(()=>{
+
+    document.getElementById(
+        "loadingScreen"
+    ).style.display="none";
+
+    document.getElementById(
+        "mainMenu"
+    ).style.display="block";
+
+},2000);
+
+});
 loop();
-</script>
 
+</script>
 </body>
 </html>
